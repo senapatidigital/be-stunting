@@ -15,15 +15,16 @@ async function bootstrap() {
 
   await app.init();
 
-  // Menggunakan aws-serverless-express untuk mengubah Express app menjadi Lambda handler
+  // Create the server using aws-serverless-express
   server = awsServerlessExpress.createServer(expressApp);
 }
 
 export const handler: Handler = async (event, context) => {
+  // Initialize server if not already done
   if (!server) {
     await bootstrap();
   }
 
-  // Menangani event dan context menggunakan aws-serverless-express
+  // Use aws-serverless-express proxy to handle the Lambda event and context
   return awsServerlessExpress.proxy(server, event, context);
 };
